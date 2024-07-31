@@ -18,6 +18,7 @@ final class ToDoListViewModel: ObservableObject {
     @Published var toDoItems: [ToDoItem] = [] {
         didSet {
             repository.saveToDoItems(toDoItems)
+            
         }
     }
 
@@ -40,8 +41,30 @@ final class ToDoListViewModel: ObservableObject {
         toDoItems.removeAll { $0.id == item.id }
     }
 
+   // Enumeration to represent filter options
+    enum FilterOption: Int {
+        case all = 0
+        case completed = 1
+        case notCompleted = 2
+    }
+    
     /// Apply the filter to update the list.
     func applyFilter(at index: Int) {
         // TODO: - Implement the logic for filtering
+       guard let filterOption = FilterOption(rawValue: index) else {
+            return
+        }
+        switch filterOption {
+        case .all:
+            toDoItems = toDoItems
+        case .completed:
+            toDoItems = toDoItems.filter({ $0.isDone })
+        case .notCompleted:
+            toDoItems = toDoItems.filter({ !$0.isDone })
+        }
     }
+    
+    
+    
+    
 }
