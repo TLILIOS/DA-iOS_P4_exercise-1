@@ -8,7 +8,6 @@ struct ToDoListView: View {
     
     // New state for filter index
     @State private var filterIndex = 0
-    
     var body: some View {
         NavigationView {
             VStack {
