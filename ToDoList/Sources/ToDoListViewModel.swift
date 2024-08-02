@@ -4,13 +4,14 @@ final class ToDoListViewModel: ObservableObject {
     // MARK: - Private properties
 
     private let repository: ToDoListRepositoryType
-
+    private var allItems: [ToDoItem] = []
+    private var currentFilter: FilterOption = .all
     // MARK: - Init
 
     init(repository: ToDoListRepositoryType) {
         self.repository = repository
-        self.toDoItems = repository.loadToDoItems()
-
+        self.allItems = repository.loadToDoItems()
+        self.toDoItems = allItems
     }
 
     // MARK: - Outputs
@@ -18,32 +19,38 @@ final class ToDoListViewModel: ObservableObject {
     @Published var toDoItems: [ToDoItem] = [] {
         didSet {
             repository.saveToDoItems(toDoItems)
-            
         }
+    
     }
 
     // MARK: - Inputs
 
     // Add a new to-do item with priority and category
     func add(item: ToDoItem) {
-        toDoItems.append(item)
+        allItems.append(item)
+        applyCurrentFilter()
 //        applyFilter(at: 0)
+//        saveChange()
     }
 
     /// Toggles the completion status of a to-do item.
     func toggleTodoItemCompletion(_ item: ToDoItem) {
-        if let index = toDoItems.firstIndex(where: { $0.id == item.id }) {
-            toDoItems[index].isDone.toggle()
+        if let index = allItems.firstIndex(where: { $0.id == item.id }) {
+            allItems[index].isDone.toggle()
+            applyCurrentFilter()
             // Fixed ?
 //            applyFilter(at: 0)
+//            saveChange()
         }
     }
 
     /// Removes a to-do item from the list.
     func removeTodoItem(_ item: ToDoItem) {
-        toDoItems.removeAll { $0.id == item.id }
+        allItems.removeAll { $0.id == item.id }
+        applyCurrentFilter()
         //Fixed ?
 //        applyFilter(at: 0)
+//    saveChange()
     }
 
    // Enumeration to represent filter options
@@ -56,20 +63,27 @@ final class ToDoListViewModel: ObservableObject {
     /// Apply the filter to update the list.
     func applyFilter(at index: Int) {
         // TODO: - Implement the logic for filtering
-       guard let filterOption = FilterOption(rawValue: index) else {
-            return
-        }
-        switch filterOption {
-        case .all:
-            toDoItems = toDoItems
-        case .completed:
-            toDoItems = toDoItems.filter({ $0.isDone })
-        case .notCompleted:
-            toDoItems = toDoItems.filter({ !$0.isDone })
-        }
+        guard let filterOption = FilterOption(rawValue: index) else {return}
+        currentFilter = filterOption
+        applyCurrentFilter()
     }
+        func applyCurrentFilter() {
+            switch currentFilter {
+            case .all:
+                toDoItems = allItems
+            case .completed:
+                toDoItems = allItems.filter{ $0.isDone }
+            case .notCompleted:
+                toDoItems = allItems.filter{ !$0.isDone }
+                
+            }
+            repository.saveToDoItems(allItems)
+        }
     
-    
+    //Save changes to the repository
+//    func saveChange() {
+//        repository.saveToDoItems(toDoItems)
+//    }
     
     
 }
