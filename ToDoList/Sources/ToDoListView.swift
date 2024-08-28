@@ -54,7 +54,7 @@ struct ToDoListView: View {
                     HStack {
                         TextField("Enter Task Title", text: $newTodoTitle)
                             .padding(.leading)
-
+                        
                         Spacer()
                         
                         Button(action: {
@@ -96,7 +96,7 @@ struct ToDoListView: View {
                         .shadow(radius: 5)
                 }
                 .padding()
-
+                
             }
             .navigationBarTitle("To-Do List")
             .navigationBarItems(trailing: EditButton())

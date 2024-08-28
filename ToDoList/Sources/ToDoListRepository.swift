@@ -7,7 +7,7 @@ protocol ToDoListRepositoryType {
 
 final class ToDoListRepository: ToDoListRepositoryType {
     private let fileURL: URL
-
+    
     init() {
         // Define a file URL for storing the to-do items in a JSON file
         if let documentsDirectory = FileManager.default.urls(
@@ -19,7 +19,7 @@ final class ToDoListRepository: ToDoListRepositoryType {
             fatalError("Failed to get documents directory.")
         }
     }
-
+    
     // Load to-do items from the JSON file
     func loadToDoItems() -> [ToDoItem] {
         do {
@@ -32,7 +32,7 @@ final class ToDoListRepository: ToDoListRepositoryType {
             return []
         }
     }
-
+    
     // Save to-do items to the JSON file
     func saveToDoItems(_ toDoItems: [ToDoItem]) {
         do {
