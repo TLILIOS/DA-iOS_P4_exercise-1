@@ -12,7 +12,7 @@ struct ToDoListView: View {
         NavigationView {
             VStack {
                 // Filter selector
-                // TODO: - Add a filter selector which will call the viewModel for updating the displayed data
+                // A filter selector which will call the viewModel for updating the displayed data
                 Picker("Filter", selection: $filterIndex) {
                     Text("All").tag(0)
                     Text("Done").tag(1)
@@ -25,7 +25,7 @@ struct ToDoListView: View {
                 
                 // List of tasks
                 List {
-                    ForEach(viewModel.toDoItems) { item in
+                    ForEach(viewModel.displayedItems) { item in
                         HStack {
                             Button(action: {
                                 viewModel.toggleTodoItemCompletion(item)
@@ -43,7 +43,7 @@ struct ToDoListView: View {
                     }
                     .onDelete { indices in
                         indices.forEach { index in
-                            let item = viewModel.toDoItems[index]
+                            let item = viewModel.displayedItems[index]
                             viewModel.removeTodoItem(item)
                         }
                     }

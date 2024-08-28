@@ -11,14 +11,14 @@ final class ToDoListViewModel: ObservableObject {
     init(repository: ToDoListRepositoryType) {
         self.repository = repository
         self.allItems = repository.loadToDoItems()
-        self.toDoItems = allItems
+        self.displayedItems = allItems
     }
 
     // MARK: - Outputs
     /// Publisher for the list of to-do items.
-    @Published var toDoItems: [ToDoItem] = [] {
+    @Published var displayedItems: [ToDoItem] = [] {
         didSet {
-            repository.saveToDoItems(toDoItems)
+            repository.saveToDoItems(displayedItems)
         }
     
     }
@@ -29,8 +29,6 @@ final class ToDoListViewModel: ObservableObject {
     func add(item: ToDoItem) {
         allItems.append(item)
         applyCurrentFilter()
-//        applyFilter(at: 0)
-//        saveChange()
     }
 
     /// Toggles the completion status of a to-do item.
@@ -38,9 +36,6 @@ final class ToDoListViewModel: ObservableObject {
         if let index = allItems.firstIndex(where: { $0.id == item.id }) {
             allItems[index].isDone.toggle()
             applyCurrentFilter()
-            // Fixed ?
-//            applyFilter(at: 0)
-//            saveChange()
         }
     }
 
@@ -48,9 +43,6 @@ final class ToDoListViewModel: ObservableObject {
     func removeTodoItem(_ item: ToDoItem) {
         allItems.removeAll { $0.id == item.id }
         applyCurrentFilter()
-        //Fixed ?
-//        applyFilter(at: 0)
-//    saveChange()
     }
 
    // Enumeration to represent filter options
@@ -70,20 +62,14 @@ final class ToDoListViewModel: ObservableObject {
         func applyCurrentFilter() {
             switch currentFilter {
             case .all:
-                toDoItems = allItems
+                displayedItems = allItems
             case .completed:
-                toDoItems = allItems.filter{ $0.isDone }
+                displayedItems = allItems.filter{ $0.isDone }
             case .notCompleted:
-                toDoItems = allItems.filter{ !$0.isDone }
+                displayedItems = allItems.filter{ !$0.isDone }
                 
             }
-            repository.saveToDoItems(allItems)
+
         }
-    
-    //Save changes to the repository
-//    func saveChange() {
-//        repository.saveToDoItems(toDoItems)
-//    }
-    
     
 }
